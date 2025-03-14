@@ -1,0 +1,228 @@
+<html> 
+    <head>
+        <title>Dashboard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/wavesurfer.js"></script>
+        <style>
+            .top-1 {
+                letter-spacing: 0.2cm;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            body {
+                background: linear-gradient(45deg, black, grey);
+                display: block;
+                min-height: 300vh;
+                margin: 0;
+                padding: 0;
+            }
+            .vid-bck {
+                z-index: -1;
+                position: fixed;
+                top: 0;
+                object-fit: cover;
+
+            }
+            .text-1 {
+                font-family: 'Bebas Neue', sans-serif;
+                font-size: 30px;
+                letter-spacing: .2cm;
+                margin-bottom: 100px;
+                margin-top: 40px;
+                text-align: center;
+            }
+            .text-2 {
+                font-family: 'Bebas Neue', sans-serif;
+                font-size: 20px;
+                color: white;
+                letter-spacing: .2cm;
+                margin-top: -80px;
+                text-align: center;
+            }
+            #waveform {
+                width: 35%;
+                height: 80px;
+                margin: 20px auto;
+                border-radius: 10px;
+            }
+            #waveform2 { 
+                width: 35%;
+                height: 80px;
+                margin: 20px auto;
+                border-radius: 10px;
+            }
+            .p-pbtn {
+                background: linear-gradient(90deg, blue, red);
+                color: white;
+                border: none;
+                outline: none;
+                box-shadow: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.8s ease;
+                display: block;
+                margin: 0 auto;
+            }
+            .vol-slider {
+                width: 20%;
+                display: block;
+                margin: 20px auto;
+            }
+            .kawaii-text {
+                text-align: center;
+                color: white;
+                font-size: 160%;
+                margin-top: 2%;
+            }
+            .kawaii-text-2 {
+                text-align: center;
+                color: white;
+                font-size: 160%;
+                margin-top: 2%;
+            }
+            .logo {
+                width: 200px;
+                height: 100px;
+                mix-blend-mode: screen;
+                display: block;
+                margin: 0 auto;
+                margin-top: 1%;
+            }
+            .logo-fixed {
+                position: fixed;
+                bottom: 0;
+                width: 100px;
+                mix-blend-mode: screen;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.5s ease, visilibilty 0.5s ease;
+                z-index: 1000;
+            }
+            .logo-fixed.visible {
+                opacity: 1;
+                visibility: visible;
+
+            }
+        </style>
+    </head> 
+    <body>
+        <video class="vid-bck" autoplay muted loop>
+            <source src="videoplayback.webm" type="video/webm">
+        </video>
+        <h3 style="color: white;" class="text-1" >You've successfully Logged in!</h3>
+        <h5 class="text-2">Listen to My Songs!!</h5>
+        <h3 style="font-family: 'Bebas Neue', sans-serif;" class="top-1">Here are My LATEST PROJECTS</h3>
+        <img class="logo" id="topLogo" src="logo.png">
+        <h4 style="font-family: 'Pacifico', sans-serif;" class="kawaii-text" >1. KAWAII</h4>
+        <img class="logo-fixed" id="logoFixed" src="logo.png">
+        
+        
+        <div id="waveform"></div>
+        <button class="p-pbtn" onclick="wavesurfer.playPause()">Play / Pause</button>
+
+        <input 
+            type="range"
+            min="0"
+            max="1"
+            step=".001"
+            value=".5"
+            class="vol-slider"
+            id="volumeSlider"
+            oninput="changeVolume(this.value)"
+        >
+        <h4 class="kawaii-text-2" style="font-family: 'Pacifico', sans-serif;">2. NOT KAWAII</h4>
+        <div id="waveform2"></div>
+        <button class="p-pbtn" onclick="wavesurfer2.playPause()">Play / Pause</button>
+        <input 
+            type="range"
+            min="0"
+            max="1"
+            step=".001"
+            value=".5"
+            class="vol-slider"
+            id="volumeSlider2"
+            oninput="changeVolume2(this.value)"
+        >
+
+        <script>
+            const topLogo = document.getElementById('topLogo');
+            const fixedLogo = document.getElementById('logoFixed');
+            
+            window.addEventListener('scroll', () => {
+                const topLogoRect = topLogo.getBoundingClientRect();
+                if (topLogoRect.bottom<=0) {
+                    fixedLogo.classList.add('visible');
+                } else{
+                    fixedLogo.classList.remove('visible');
+                }
+            });
+                //1st waveform
+            console.log(WaveSurfer);
+            const wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: 'white',
+                progressColor: 'purple',
+                barWidth: 2,
+                height: 80,
+                interact: true,
+                responsive: true,
+                cursorColor:'none',
+                minPxPerSec: 1,
+                scrollParent: false, 
+                partialRender: true,
+            });
+            wavesurfer.on('error', (e)=> {
+                console.error('WaveSurfer error:', e);
+            });
+
+            wavesurfer.load('kawaii.mp3');
+
+            wavesurfer.on('seek', (progress) => {
+                console.log(`User clicked on the waveform. Progress: ${progress}`);
+            });
+
+            function changeVolume(value) {
+                wavesurfer.setVolume(value);
+                console.log(`Volume set to: ${value}`);
+            }
+            wavesurfer.setVolume(0.5);
+
+            //2nd waveform
+
+            const wavesurfer2 = WaveSurfer.create({
+                container: '#waveform2',
+                waveColor: 'white',
+                progressColor: 'purple',
+                barWidth: 2,
+                height: 80,
+                interact: true,
+                responsive: true,
+                cursorColor:'none',
+                minPxPerSec: 1,
+                scrollParent: false, 
+                partialRender: true,
+            });
+            wavesurfer2.on('error', (e)=> {
+                console.error('WaveSurfer error:', e);
+            });
+
+            wavesurfer2.load('kawaii 2.mp3');
+
+            wavesurfer2.on('seek', (progress) => {
+                console.log(`User clicked on the waveform. Progress: ${progress}`);
+            });
+
+            function changeVolume2(value) {
+                wavesurfer2.setVolume(value);
+                console.log(`Volume set to: ${value}`);
+            }
+            wavesurfer2.setVolume(0.5);
+        </script>
+        
+    </body>
+</html>
